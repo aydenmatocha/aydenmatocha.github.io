@@ -1,1 +1,0 @@
-# NFL-ARM-Rankings-2024
