@@ -1,0 +1,71 @@
+---
+title: "2025 NFL Draft OT Grades"
+author: "Ayden Matocha"
+date: "4/2/2025"
+output:
+  html_document:
+    toc: TRUE
+---
+
+# Packages Needed
+```{r}
+library(tidyverse)
+library(DT)
+```
+
+# Read CSV File
+```{r}
+OT_Stats <- read.csv("OT_Rankings.csv") %>%
+  arrange(rank) %>%
+  mutate(pos_rank_bef = row_number())
+datatable(OT_Stats)
+```
+
+
+# Get Mean Values
+```{r}
+mean(OT_Stats$rb_grade)
+mean(OT_Stats$pb_grade)
+mean(OT_Stats$zone_grade)
+mean(OT_Stats$gap_grade)
+mean(OT_Stats$pbe)
+```
+
+# Create Values Function
+```{r}
+get_ot_values <- function(input_df) {
+  df_ot_copy <- input_df %>% mutate(
+    rb_grade = round(pmax(pmin((rb_grade-65) / 2, 10), 0), 2),  # 65-85, mean 75
+    pb_grade = round(pmax(pmin((pb_grade-65) / 2, 10), 0), 2), # 65-85, mean 75
+    zone_grade = round(pmax(pmin((zone_grade-65) / 2, 10), 0), 2), # 65-85, mean 75
+    gap_grade = round(pmax(pmin((gap_grade-55) / 2, 10), 0), 2), # 55-75, mean 65
+    pbe = round(pmax(pmin((pbe-93) * 1.67, 10), 0), 2), # 93-99, mean 96
+    
+  )
+  
+  return(df_ot_copy)
+}
+```
+
+# Create Final Dataset
+```{r}
+new_stats_ot <- get_ot_values(OT_Stats) %>% 
+  mutate(total = rowSums(select(., -player, -adp, -rank, -pos_rank_bef, -team))) %>% 
+  arrange(-total) %>%
+  mutate(pos = "OT", pos_rank_aft = row_number(), pos_rank_diff = pos_rank_bef-pos_rank_aft) %>%
+  select(player, rb_grade, pb_grade, zone_grade, gap_grade, pbe, total, rank, pos, team, pos_rank_bef, pos_rank_aft, pos_rank_diff)
+datatable(new_stats_ot)
+```
+
+# Get Total Value and Rank
+get the dataset that only contains the total and the ranks
+```{r}
+ot_stats_total <- new_stats_ot %>%
+  select(player, total, rank, pos, team, pos_rank_bef, pos_rank_aft, pos_rank_diff)
+datatable(ot_stats_total)
+```
+
+# Download Final Rankings
+```{r}
+write.csv(ot_stats_total, "ot_stats_total.csv", row.names = FALSE)
+```

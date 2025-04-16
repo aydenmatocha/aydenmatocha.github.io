@@ -1,0 +1,99 @@
+---
+title: "2025 NFL Draft QB Grades"
+author: "Ayden Matocha"
+date: "4/2/2025"
+output:
+  html_document:
+    toc: TRUE
+---
+
+# Packages Needed
+```{r}
+library(tidyverse)
+library(cfbfastR)
+library(DT)
+```
+
+# Load Play-By-Play Data
+```{r}
+pbp_2024 <- load_cfb_pbp(seasons = 2024)
+```
+
+
+# Get Players and Mean EPA
+```{r}
+qb_players <- c("Cam Ward", "Shedeur Sanders", "Jalen Milroe", "Will Howard", "Riley Leonard", "Jaxson Dart", "Dillon Gabriel", "Quinn Ewers", "Kyle McCord", "Tyler Shough", "Kurtis Rourke", "Brady Cook", "Max Brosmer", "Graham Mertz", "Seth Henigan", "Will Rogers", "Donovan Smith", "KJ Jefferson", "DJ Uiagalelei")
+
+passer_summary <- pbp_2024 %>%
+  filter(pass == 1) %>%
+  group_by(passer_player_name) %>%
+  summarize(total_plays = n(), mean_epa = mean(EPA, na.rm = TRUE)) %>%
+  filter(!is.na(passer_player_name), passer_player_name %in% qb_players) %>%
+  rename(player = passer_player_name) %>%
+  arrange(-mean_epa)
+
+datatable(passer_summary)
+```
+
+
+# Read CSV File
+```{r}
+QB_Stats <- read.csv("QB_Rankings.csv") %>%
+  arrange(rank) %>%
+  mutate(pos_rank_bef = row_number())
+datatable(QB_Stats)
+```
+
+# Combine Datasets
+```{r}
+combined_qb <- QB_Stats %>%
+  left_join(passer_summary, by = "player")
+datatable(combined_qb)
+```
+
+
+# Get Mean Values
+```{r}
+mean(combined_qb$pass_grade)
+mean(combined_qb$pass_rtg)
+mean(combined_qb$towp)
+mean(combined_qb$btt)
+mean(combined_qb$mean_epa)
+```
+
+# Create Values Function
+```{r}
+get_qb_values <- function(input_df) {
+  df_qb_copy <- input_df %>% mutate(
+    pass_grade = round(pmax(pmin((pass_grade-70) / 2, 10), 0), 2), # 70-90, mean 80
+    pass_rtg = round(pmax(pmin((pass_rtg-90) / 3, 10), 0), 2), # 90-120, mean 105
+    towp = round(pmax(pmin(((100-towp)-96.5) * 5, 10), 0), 2), # 3.5-1.5, mean 2.5
+    btt = round(pmax(pmin((btt-3) * 3.33, 10), 0), 2), # 3-6, mean 4.5
+    mean_epa = round(pmax(pmin((mean_epa) * 33.33, 10), 0), 2), # 0-.3, mean .15
+  )
+  return(df_qb_copy)
+}
+```
+
+# Create Final Dataset
+```{r}
+new_stats_qb <- get_qb_values(combined_qb) %>% 
+  mutate(total = rowSums(select(., -player, -adp, -total_plays, -rank, -pos_rank_bef, -team))) %>% 
+  arrange(-total) %>%
+  mutate(pos = "QB", pos_rank_aft = row_number(), pos_rank_diff = pos_rank_bef-pos_rank_aft) %>%
+  select(player, pass_grade, pass_rtg, towp, btt, mean_epa, total, rank, pos, team, pos_rank_bef, pos_rank_aft, pos_rank_diff)
+datatable(new_stats_qb)
+```
+
+# Get Total Value and Rank
+get the dataset that only contains the total and the ranks
+```{r}
+qb_stats_total <- new_stats_qb %>%
+  select(player, total, rank, pos, team, pos_rank_bef, pos_rank_aft, pos_rank_diff)
+datatable(qb_stats_total)
+```
+
+# Download Final Rankings
+```{r}
+write.csv(qb_stats_total, "qb_stats_total.csv", row.names = FALSE)
+```

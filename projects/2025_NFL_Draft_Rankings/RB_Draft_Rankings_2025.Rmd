@@ -1,0 +1,110 @@
+---
+title: "2025 NFL Draft RB Grades"
+author: "Ayden Matocha"
+date: "4/2/2025"
+output:
+  html_document:
+    toc: TRUE
+---
+
+# Packages Needed
+```{r}
+library(tidyverse)
+library(cfbfastR)
+library(DT)
+```
+
+# Load Play-By-Play Data
+```{r}
+pbp_2024 <- load_cfb_pbp(seasons = 2024)
+```
+
+
+# Get Players and Mean EPA
+possibly change the way of getting players later
+```{r}
+players <- c("Ashton Jeanty", "Omarion Hampton", "Kaleb Johnson", "Cam Skattebo", "Quinshon Judkins", "Dylan Sampson", "TreVeyon Henderson", "RJ Harvey", "DJ Giddens", "Devin Neal", "Jaydon Blue", "Damien Martinez", "Brashard Smith", "Jacory Croskey-Merritt", "Jarquez Hunter", "Kalel Mullings", "Trevor Etienne", "Kyle Monangai", "Marcus Yarns", "Bhayshul Tuten", "Jordan James", "Tahj Brooks", "Ollie Gordon II", "LeQuint Allen", "Ja'Quinden Jackson", "Woody Marks", "Montrell Johnson Jr.", "Raheim Sanders", "Donovan Edwards")
+
+rusher_summary <- pbp_2024 %>%
+  filter(rush == 1) %>%
+  group_by(rusher_player_name) %>%
+  summarize(total_plays = n(), mean_epa = mean(EPA, na.rm = TRUE)) %>%
+  filter(!is.na(rusher_player_name), rusher_player_name %in% players) %>%
+  rename(player = rusher_player_name) %>%
+  arrange(-mean_epa)
+
+datatable(rusher_summary)
+```
+
+
+# Read CSV File
+```{r}
+RB_Stats <- read.csv("RB_Rankings.csv") %>%
+  arrange(rank) %>%
+  mutate(pos_rank_bef = row_number())
+datatable(RB_Stats)
+```
+
+# Combine Datasets
+```{r}
+combined_rb <- RB_Stats %>%
+  left_join(rusher_summary, by = "player")
+datatable(combined_rb)
+```
+
+
+# Calculate Fumble Percentage
+```{r}
+RB_Stats_Final <- combined_rb %>% mutate(fumble_percentage = (fumbles / total_plays)*100) %>% select(player, rush_grade, yac.att, yprr, pb_grade, fumble_percentage, mean_epa, rank, team, pos_rank_bef) %>% mutate(across(where(is.numeric), round, 3))
+datatable(RB_Stats_Final)
+```
+
+
+
+# Get Mean Values
+```{r}
+mean(RB_Stats_Final$rush_grade)
+mean(RB_Stats_Final$yac.att)
+mean(RB_Stats_Final$yprr)
+mean(RB_Stats_Final$pb_grade)
+mean(RB_Stats_Final$fumble_percentage)
+mean(RB_Stats_Final$mean_epa)
+```
+
+# Create Values Function
+```{r}
+get_rb_values <- function(input_df) {
+  df_rb_copy <- input_df %>% mutate(
+    rush_grade = round(pmax(pmin((rush_grade-70) / 2, 10), 0), 2), # 70-90, mean 80
+    yac.att = round(pmax(pmin((yac.att-2.5) * 5, 10), 0), 2), # 2.5-4.5, mean 3.5
+    yprr = round(pmax(pmin((yprr-0.5) * 10, 10), 0), 2), # 0.5-1.5, mean 1
+    pb_grade = round(pmax(pmin((pb_grade-35) / 6, 5), 0), 2), # 35-65, mean 50, worth 5
+    fumble_percentage = round(pmax(pmin(((100-fumble_percentage)-98) * 3.33, 5), 0), 2), # 2-0.5, mean 1.25, worth 5
+    mean_epa = round(pmax(pmin((mean_epa) * 50, 10), 0), 2), # 0-.2, mean .1
+  )
+  return(df_rb_copy)
+}
+```
+
+# Create Final Dataset
+```{r}
+new_stats_rb <- get_rb_values(RB_Stats_Final) %>% 
+  mutate(total = rowSums(select(., -player, -rank, -pos_rank_bef, -team))) %>% 
+  arrange(-total) %>%
+  mutate(pos = "RB", pos_rank_aft = row_number(), pos_rank_diff = pos_rank_bef-pos_rank_aft) %>%
+  select(player, rush_grade, yac.att, yprr, pb_grade, fumble_percentage, mean_epa, total, rank, pos, team, pos_rank_bef, pos_rank_aft, pos_rank_diff)
+datatable(new_stats_rb)
+```
+
+# Get Total Value and Rank
+get the dataset that only contains the total and the ranks
+```{r}
+rb_stats_total <- new_stats_rb %>%
+  select(player, total, rank, pos, team, pos_rank_bef, pos_rank_aft, pos_rank_diff)
+datatable(rb_stats_total)
+```
+
+# Download Final Rankings
+```{r}
+write.csv(rb_stats_total, "rb_stats_total.csv", row.names = FALSE)
+```

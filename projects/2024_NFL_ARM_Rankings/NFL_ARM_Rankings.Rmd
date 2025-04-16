@@ -1,0 +1,365 @@
+---
+title: "2024 NFL ARM Rankings"
+author: "Ayden Matocha"
+date: "3/2/2025"
+output:
+  html_document:
+    toc: TRUE
+---
+
+# ARM Ranking:
+1. Win% (ESPN)
+2. SOS (ESPN)
+3. Point Differential (ESPN)
+4. EPA/play (nflfastR)
+5. EPA/play Against (nflfastR)
+
+# Formula
+$$
+\text{ARM Rank} = (\alpha_1 \cdot WP) + (\alpha_2 \cdot (SOS - c_1)) + (\frac{PD + c_2}{\alpha_3})) + (\alpha_4 \cdot (EPA + c_3)) + (\alpha_5 \cdot (EPA_A - c_4))
+$$
+
+# Formula With Values
+$$
+\text{ARM Rank} = (3 \cdot WP) + (5 \cdot (SOS - 0.4)) + (\frac{PD + 250}{250}) + (6.67 \cdot (EPA + 0.15)) + ((-6.67) \cdot (EPA_A - 0.15))
+$$
+
+# Packages Needed
+```{r}
+library(tidyverse)
+library(nflfastR)
+library(DT)
+```
+
+
+# Assign Win Percentage
+```{r}
+Lions_win <- .882
+Chiefs_win <- .882
+Bills_win <- .765
+Eagles_win <- .824
+Ravens_win <- .706
+Bucs_win <- .588
+Texans_win <- .588
+Rams_win <- .588
+Chargers_win <- .647
+Vikings_win <- .824
+Steelers_win <- .588
+Commanders_win <- .706
+Broncos_win <- .588
+Packers_win <- .647
+Bengals_win <- .529
+Seahawks_win <- .588
+Falcons_win <- .471
+Colts_win <- .471
+Cardinals_win <- .471
+Dolphins_win <- .471
+Cowboys_win <- .412
+Jets_win <- .294
+Jaguars_win <- .235
+Niners_win <- .353
+Bears_win <- .294
+Patriots_win <- .235
+Panthers_win <- .294
+Raiders_win <- .235
+Browns_win <- .176
+Saints_win <- .294
+Giants_win <- .176
+Titans_win <- .176
+```
+
+# Assign Strength of Schedule
+```{r}
+Lions_SOS <- .516
+Chiefs_SOS <- .488
+Bills_SOS <- .467
+Eagles_SOS <- .453
+Ravens_SOS <- .529
+Bucs_SOS <- .502
+Texans_SOS <- .481
+Rams_SOS <- .505
+Chargers_SOS <- .467
+Vikings_SOS <- .474
+Steelers_SOS <- .502
+Commanders_SOS <- .436
+Broncos_SOS <- .502
+Packers_SOS <- .533
+Bengals_SOS <- .478
+Seahawks_SOS <- .498
+Falcons_SOS <- .519
+Colts_SOS <- .457
+Cardinals_SOS <- .536
+Dolphins_SOS <- .419
+Cowboys_SOS <- .522
+Jets_SOS <- .495
+Jaguars_SOS <- .478
+Niners_SOS <- .564
+Bears_SOS <- .554
+Patriots_SOS <- .471
+Panthers_SOS <- .498
+Raiders_SOS <- .54
+Browns_SOS <- .536
+Saints_SOS <- .505
+Giants_SOS <- .554
+Titans_SOS <- .522
+```
+
+# Assign Point Differential
+```{r}
+Lions_PD <- 222
+Eagles_PD <- 160
+Bills_PD <- 157
+Ravens_PD <- 157
+Packers_PD <- 122
+Bucs_PD <- 117
+Broncos_PD <- 114
+Chargers_PD <- 101
+Vikings_PD <- 100
+Commanders_PD <- 94
+Chiefs_PD <- 59
+Bengals_PD <- 38
+Steelers_PD <- 33
+Cardinals_PD <- 21
+Seahawks_PD <- 7
+Texans_PD <- 0
+Rams_PD <- -19
+Dolphins_PD <- -19
+Falcons_PD <- -34
+Niners_PD <- -47
+Colts_PD <- -50
+Bears_PD <- -60
+Saints_PD <- -60
+Jets_PD <- -66
+Jaguars_PD <- -115
+Cowboys_PD <- -118
+Raiders_PD <- -125
+Patriots_PD <- -128
+Giants_PD <- -142
+Titans_PD <- -149
+Browns_PD <- -177
+Panthers_PD <- -193
+```
+
+# Get Play-By-Play Data
+```{r}
+data <- load_pbp(2024)
+```
+
+# Get EPA/Play
+```{r}
+Lions_EPA <- data %>% filter(posteam == "DET", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Eagles_EPA <- data %>% filter(posteam == "PHI", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Bills_EPA <- data %>% filter(posteam == "BUF", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Ravens_EPA <- data %>% filter(posteam == "BAL", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Packers_EPA <- data %>% filter(posteam == "GB", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Bucs_EPA <- data %>% filter(posteam == "TB", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Broncos_EPA <- data %>% filter(posteam == "DEN", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Chargers_EPA <- data %>% filter(posteam == "LAC", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Vikings_EPA <- data %>% filter(posteam == "MIN", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Commanders_EPA <- data %>% filter(posteam == "WAS", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Chiefs_EPA <- data %>% filter(posteam == "KC", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Bengals_EPA <- data %>% filter(posteam == "CIN", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Steelers_EPA <- data %>% filter(posteam == "PIT", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Cardinals_EPA <- data %>% filter(posteam == "ARI", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Seahawks_EPA <- data %>% filter(posteam == "SEA", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Texans_EPA <- data %>% filter(posteam == "HOU", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Rams_EPA <- data %>% filter(posteam == "LA", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Dolphins_EPA <- data %>% filter(posteam == "MIA", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Falcons_EPA <- data %>% filter(posteam == "ATL", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Niners_EPA <- data %>% filter(posteam == "SF", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Colts_EPA <- data %>% filter(posteam == "IND", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Bears_EPA <- data %>% filter(posteam == "CHI", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Saints_EPA <- data %>% filter(posteam == "NO", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Jets_EPA <- data %>% filter(posteam == "NYJ", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Jaguars_EPA <- data %>% filter(posteam == "JAX", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Cowboys_EPA <- data %>% filter(posteam == "DAL", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Raiders_EPA <- data %>% filter(posteam == "LV", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Patriots_EPA <- data %>% filter(posteam == "NE", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Giants_EPA <- data %>% filter(posteam == "NYG", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Titans_EPA <- data %>% filter(posteam == "TEN", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Browns_EPA <- data %>% filter(posteam == "CLE", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Panthers_EPA <- data %>% filter(posteam == "CAR", season_type == "REG", down <= 4) %>% group_by(posteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+```
+
+# Get EPA/Play Against
+```{r}
+Lions_EPA_DEF <- data %>% filter(defteam == "DET", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Eagles_EPA_DEF <- data %>% filter(defteam == "PHI", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Bills_EPA_DEF <- data %>% filter(defteam == "BUF", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Ravens_EPA_DEF <- data %>% filter(defteam == "BAL", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Packers_EPA_DEF <- data %>% filter(defteam == "GB", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Bucs_EPA_DEF <- data %>% filter(defteam == "TB", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Broncos_EPA_DEF <- data %>% filter(defteam == "DEN", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Chargers_EPA_DEF <- data %>% filter(defteam == "LAC", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Vikings_EPA_DEF <- data %>% filter(defteam == "MIN", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Commanders_EPA_DEF <- data %>% filter(defteam == "WAS", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Chiefs_EPA_DEF <- data %>% filter(defteam == "KC", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Bengals_EPA_DEF <- data %>% filter(defteam == "CIN", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Steelers_EPA_DEF <- data %>% filter(defteam == "PIT", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Cardinals_EPA_DEF <- data %>% filter(defteam == "ARI", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Seahawks_EPA_DEF <- data %>% filter(defteam == "SEA", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Texans_EPA_DEF <- data %>% filter(defteam == "HOU", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Rams_EPA_DEF <- data %>% filter(defteam == "LA", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Dolphins_EPA_DEF <- data %>% filter(defteam == "MIA", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Falcons_EPA_DEF <- data %>% filter(defteam == "ATL", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Niners_EPA_DEF <- data %>% filter(defteam == "SF", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Colts_EPA_DEF <- data %>% filter(defteam == "IND", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Bears_EPA_DEF <- data %>% filter(defteam == "CHI", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Saints_EPA_DEF <- data %>% filter(defteam == "NO", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Jets_EPA_DEF <- data %>% filter(defteam == "NYJ", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Jaguars_EPA_DEF <- data %>% filter(defteam == "JAX", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Cowboys_EPA_DEF <- data %>% filter(defteam == "DAL", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Raiders_EPA_DEF <- data %>% filter(defteam == "LV", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Patriots_EPA_DEF <- data %>% filter(defteam == "NE", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Giants_EPA_DEF <- data %>% filter(defteam == "NYG", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Titans_EPA_DEF <- data %>% filter(defteam == "TEN", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Browns_EPA_DEF <- data %>% filter(defteam == "CLE", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+Panthers_EPA_DEF <- data %>% filter(defteam == "CAR", season_type == "REG", down <= 4) %>% group_by(defteam) %>% summarize(mean_epa = mean(epa, na.rm = TRUE)) %>% select(mean_epa) %>% pull(mean_epa)
+```
+
+# Add Values Into Vector
+```{r}
+Lions_Vector <- c(Lions_win, Lions_SOS, Lions_PD, Lions_EPA, Lions_EPA_DEF)
+Eagles_Vector <- c(Eagles_win, Eagles_SOS, Eagles_PD, Eagles_EPA, Eagles_EPA_DEF)
+Bills_Vector <- c(Bills_win, Bills_SOS, Bills_PD, Bills_EPA, Bills_EPA_DEF)
+Ravens_Vector <- c(Ravens_win, Ravens_SOS, Ravens_PD, Ravens_EPA, Ravens_EPA_DEF)
+Packers_Vector <- c(Packers_win, Packers_SOS, Packers_PD, Packers_EPA, Packers_EPA_DEF)
+Bucs_Vector <- c(Bucs_win, Bucs_SOS, Bucs_PD, Bucs_EPA, Bucs_EPA_DEF)
+Broncos_Vector <- c(Broncos_win, Broncos_SOS, Broncos_PD, Broncos_EPA, Broncos_EPA_DEF)
+Chargers_Vector <- c(Chargers_win, Chargers_SOS, Chargers_PD, Chargers_EPA, Chargers_EPA_DEF)
+Vikings_Vector <- c(Vikings_win, Vikings_SOS, Vikings_PD, Vikings_EPA, Vikings_EPA_DEF)
+Commanders_Vector <- c(Commanders_win, Commanders_SOS, Commanders_PD, Commanders_EPA, Commanders_EPA_DEF)
+Chiefs_Vector <- c(Chiefs_win, Chiefs_SOS, Chiefs_PD, Chiefs_EPA, Chiefs_EPA_DEF)
+Bengals_Vector <- c(Bengals_win, Bengals_SOS, Bengals_PD, Bengals_EPA, Bengals_EPA_DEF)
+Steelers_Vector <- c(Steelers_win, Steelers_SOS, Steelers_PD, Steelers_EPA, Steelers_EPA_DEF)
+Cardinals_Vector <- c(Cardinals_win, Cardinals_SOS, Cardinals_PD, Cardinals_EPA, Cardinals_EPA_DEF)
+Seahawks_Vector <- c(Seahawks_win, Seahawks_SOS, Seahawks_PD, Seahawks_EPA, Seahawks_EPA_DEF)
+Texans_Vector <- c(Texans_win, Texans_SOS, Texans_PD, Texans_EPA, Texans_EPA_DEF)
+Rams_Vector <- c(Rams_win, Rams_SOS, Rams_PD, Rams_EPA, Rams_EPA_DEF)
+Dolphins_Vector <- c(Dolphins_win, Dolphins_SOS, Dolphins_PD, Dolphins_EPA, Dolphins_EPA_DEF)
+Falcons_Vector <- c(Falcons_win, Falcons_SOS, Falcons_PD, Falcons_EPA, Falcons_EPA_DEF)
+Niners_Vector <- c(Niners_win, Niners_SOS, Niners_PD, Niners_EPA, Niners_EPA_DEF)
+Colts_Vector <- c(Colts_win, Colts_SOS, Colts_PD, Colts_EPA, Colts_EPA_DEF)
+Bears_Vector <- c(Bears_win, Bears_SOS, Bears_PD, Bears_EPA, Bears_EPA_DEF)
+Saints_Vector <- c(Saints_win, Saints_SOS, Saints_PD, Saints_EPA, Saints_EPA_DEF)
+Jets_Vector <- c(Jets_win, Jets_SOS, Jets_PD, Jets_EPA, Jets_EPA_DEF)
+Jaguars_Vector <- c(Jaguars_win, Jaguars_SOS, Jaguars_PD, Jaguars_EPA, Jaguars_EPA_DEF)
+Cowboys_Vector <- c(Cowboys_win, Cowboys_SOS, Cowboys_PD, Cowboys_EPA, Cowboys_EPA_DEF)
+Raiders_Vector <- c(Raiders_win, Raiders_SOS, Raiders_PD, Raiders_EPA, Raiders_EPA_DEF)
+Patriots_Vector <- c(Patriots_win, Patriots_SOS, Patriots_PD, Patriots_EPA, Patriots_EPA_DEF)
+Giants_Vector <- c(Giants_win, Giants_SOS, Giants_PD, Giants_EPA, Giants_EPA_DEF)
+Titans_Vector <- c(Titans_win, Titans_SOS, Titans_PD, Titans_EPA, Titans_EPA_DEF)
+Browns_Vector <- c(Browns_win, Browns_SOS, Browns_PD, Browns_EPA, Browns_EPA_DEF)
+Panthers_Vector <- c(Panthers_win, Panthers_SOS, Panthers_PD, Panthers_EPA, Panthers_EPA_DEF)
+```
+
+# Calculate Values
+```{r}
+manipulate_values <- function(input_vector) {
+  output_vector <- input_vector
+  output_vector[1] <- input_vector[1] * 3
+  output_vector[2] <- (input_vector[2] - .4) * 5
+  if (output_vector[2] > 1)
+    output_vector[2] = 1
+  if (output_vector[2] < 0)
+    output_vector[2] = 0
+  output_vector[3] <- (input_vector[3] + 250) / 250
+  if (output_vector[3] > 2)
+    output_vector[3] = 2
+  if (output_vector[3] < -2)
+    output_vector[3] = -2
+  output_vector[4] <- (input_vector[4] + .15) * 6.67
+  if (output_vector[4] > 2)
+    output_vector[4] = 2
+  if (output_vector[4] < 0)
+    output_vector[4] = 0
+  output_vector[5] <- (input_vector[5] - .15) * -6.67
+  if (output_vector[5] > 2)
+    output_vector[5] = 2
+  if (output_vector[5] < 0)
+    output_vector[5] = 0
+  
+  return(round(output_vector, 2))
+}
+```
+
+# Assign Team Values
+```{r}
+Lions_Values <- manipulate_values(Lions_Vector)
+Eagles_Values <- manipulate_values(Eagles_Vector)
+Bills_Values <- manipulate_values(Bills_Vector)
+Ravens_Values <- manipulate_values(Ravens_Vector)
+Packers_Values <- manipulate_values(Packers_Vector)
+Bucs_Values <- manipulate_values(Bucs_Vector)
+Broncos_Values <- manipulate_values(Broncos_Vector)
+Chargers_Values <- manipulate_values(Chargers_Vector)
+Vikings_Values <- manipulate_values(Vikings_Vector)
+Commanders_Values <- manipulate_values(Commanders_Vector)
+Chiefs_Values <- manipulate_values(Chiefs_Vector)
+Bengals_Values <- manipulate_values(Bengals_Vector)
+Steelers_Values <- manipulate_values(Steelers_Vector)
+Cardinals_Values <- manipulate_values(Cardinals_Vector)
+Seahawks_Values <- manipulate_values(Seahawks_Vector)
+Texans_Values <- manipulate_values(Texans_Vector)
+Rams_Values <- manipulate_values(Rams_Vector)
+Dolphins_Values <- manipulate_values(Dolphins_Vector)
+Falcons_Values <- manipulate_values(Falcons_Vector)
+Niners_Values <- manipulate_values(Niners_Vector)
+Colts_Values <- manipulate_values(Colts_Vector)
+Bears_Values <- manipulate_values(Bears_Vector)
+Saints_Values <- manipulate_values(Saints_Vector)
+Jets_Values <- manipulate_values(Jets_Vector)
+Jaguars_Values <- manipulate_values(Jaguars_Vector)
+Cowboys_Values <- manipulate_values(Cowboys_Vector)
+Raiders_Values <- manipulate_values(Raiders_Vector)
+Patriots_Values <- manipulate_values(Patriots_Vector)
+Giants_Values <- manipulate_values(Giants_Vector)
+Titans_Values <- manipulate_values(Titans_Vector)
+Browns_Values <- manipulate_values(Browns_Vector)
+Panthers_Values <- manipulate_values(Panthers_Vector)
+```
+
+# Calculate Total Score
+```{r}
+Lions_Score <- sum(Lions_Values)
+Eagles_Score <- sum(Eagles_Values)
+Bills_Score <- sum(Bills_Values)
+Ravens_Score <- sum(Ravens_Values)
+Packers_Score <- sum(Packers_Values)
+Bucs_Score <- sum(Bucs_Values)
+Broncos_Score <- sum(Broncos_Values)
+Chargers_Score <- sum(Chargers_Values)
+Vikings_Score <- sum(Vikings_Values)
+Commanders_Score <- sum(Commanders_Values)
+Chiefs_Score <- sum(Chiefs_Values)
+Bengals_Score <- sum(Bengals_Values)
+Steelers_Score <- sum(Steelers_Values)
+Cardinals_Score <- sum(Cardinals_Values)
+Seahawks_Score <- sum(Seahawks_Values)
+Texans_Score <- sum(Texans_Values)
+Rams_Score <- sum(Rams_Values)
+Dolphins_Score <- sum(Dolphins_Values)
+Falcons_Score <- sum(Falcons_Values)
+Niners_Score <- sum(Niners_Values)
+Colts_Score <- sum(Colts_Values)
+Bears_Score <- sum(Bears_Values)
+Saints_Score <- sum(Saints_Values)
+Jets_Score <- sum(Jets_Values)
+Jaguars_Score <- sum(Jaguars_Values)
+Cowboys_Score <- sum(Cowboys_Values)
+Raiders_Score <- sum(Raiders_Values)
+Patriots_Score <- sum(Patriots_Values)
+Giants_Score <- sum(Giants_Values)
+Titans_Score <- sum(Titans_Values)
+Browns_Score <-sum(Browns_Values)
+Panthers_Score <- sum(Panthers_Values)
+```
+
+# Create Total Dataset and Sort
+```{r}
+team_scores <- data.frame(
+  Team = c("Lions", "Eagles", "Bills", "Ravens", "Packers", "Bucs", "Broncos", "Chargers", "Vikings", "Commanders", "Chiefs", "Bengals", "Steelers", "Cardinals", "Seahawks", "Texans", "Rams", "Dolphins", "Falcons", "Niners", "Colts", "Bears", "Saints", "Jets", "Jaguars", "Cowboys", "Raiders", "Patriots", "Giants", "Titans", "Browns", "Panthers"),
+  Total_Value = c(Lions_Score, Eagles_Score, Bills_Score, Ravens_Score, Packers_Score, Bucs_Score, Broncos_Score, Chargers_Score, Vikings_Score, Commanders_Score, Chiefs_Score, Bengals_Score, Steelers_Score, Cardinals_Score, Seahawks_Score, Texans_Score, Rams_Score, Dolphins_Score, Falcons_Score, Niners_Score, Colts_Score, Bears_Score, Saints_Score, Jets_Score, Jaguars_Score, Cowboys_Score, Raiders_Score, Patriots_Score, Giants_Score, Titans_Score, Browns_Score, Panthers_Score)
+) %>% arrange(-Total_Value)
+datatable(team_scores)
+```
