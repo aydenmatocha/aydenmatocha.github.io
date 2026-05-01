@@ -4,22 +4,156 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="styles/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <title>Ayden Matocha</title>
 </head>
 <body>
 
   <div class="navbar">
-    <a href="index.html" class="brand">Ayden Matocha</a>
-    <a href="index.html">Home</a>
-	<a href="resume.html">Resume</a>
-	<a href="smallprojects.html">Small Projects</a>
-    <a href="projects.html">Big Projects</a>
-    <a href="contact.html">Contact</a>
+    <a href="#home" class="ayden">Ayden Matocha</a>
+    <a href="#about">About</a>
+    <a href="#education">Education</a>
+    <a href="#experience">Experience</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+    <div class="nav-icons">
+      <a href="https://github.com/aydenmatocha" target="_blank">
+        <i class="fa-brands fa-github"></i>
+      </a>
+      <a href="https://www.linkedin.com/in/ayden-matocha-9033a8241/" target="_blank">
+        <i class="fa-brands fa-linkedin"></i>
+      </a>
+    </div>
   </div>
 
   <div class="content">
-    <h1>Welcome to My Portfolio!</h1>
-    <p>I’m Ayden Matocha, a Computer Science student specializing in data analysis and sports statistics. This site showcases selected projects, my resume, and ways to get in touch.</p>
+    <section id="home">
+      <div>
+        <h1>Hello, I'm Ayden!</h1>
+        <hr>
+        <div id="description">
+          <h2>Computer Science Student @ Appalachian State University</h2>
+          <h2>Data Science Enthusiast</h2>
+        </div>
+      </div>
+      <img src="pics/meprom.jpg" width="400" height="450" alt="headshot" class="headshot">
+    </section>
+
+    <section id="about">
+      <h1>About Me</h1>
+      <hr>
+      <div class="section-body">
+        <p>
+          I am currently a junior at Appalachian State University, pursuing a major in computer science, a minor in statistics, and a certificate in sports analytics.
+          I am proficient in a variety of programming languages and tools, including Java, R, Python, C, Git, and more.
+          I am seeking learning opportunities and aim to enhance my skills in the fields that interest me.
+        </p>
+      </div>
+      <a href="documents/resume.pdf" class="resume-btn" download>Download My Resume!</a>
+    </section>
+
+    <section id="education">
+      <h1>Education</h1>
+      <hr>
+      <div class="edu-content">
+        <img src="pics/appstate.png" width="400" height="450" alt="appstate" class="appstate">
+        <div class="section-body">
+          <h2>Appalachian State University</h2>
+          <h3>August 2023 - Expected May 2027</h3>
+          <h3>GPA: 3.88/4.0</h3>
+          <p>B.S. in Computer Science, Minor in Statistics, Certificate in Sports Analytics</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="experience">
+      <h1>Experience</h1>
+      <hr>
+      <div class="section-body">
+        <h2>Appalachian State Campus Store</h2>
+        <h3>Tech Sales Associate</h3>
+        <h3>August 2023 - Present</h3>
+        <ul>
+          <li><p>Work in the tech area of the campus store and answer any questions about the technology we sell</p></li>
+          <li><p>Utilize the NetSuite software to track inventory and predict revenue, determining which items to order</p></li>
+          <li><p>Handle department orders and P-Card transactions to assist faculty with orders</p></li>
+        </ul>
+        <br>
+        <h2>Coldwell Banker HPW</h2>
+        <h3>Intern</h3>
+        <h3>November 2022 - April 2023</h3>
+        <ul>
+          <li><p>Utilized Google Sheets to track customer data and confirm correctness</p></li>
+          <li><p>Managed a Facebook group for people relocating to the area, handling posting events and answering questions</p></li>
+          <li><p>Assist with any requested work and complete small tasks to improve the environment</p></li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="projects">
+      <h1>Projects</h1>
+      <hr>
+      <div class="section-body">
+        <h2>2026 NFL Draft Rankings</h2>
+        <h3>April 2026</h3>
+        <p><a href="https://aydenmatocha.github.io/NFL-Draft-Rankings-2026/" target="_blank" class="projects-btn">Link</a></p>
+        <ul>
+          <li><p>Built an R-based player ranking system to evaluate 2026 NFL Draft prospects using weighted statistical models</p></li>
+          <li><p>Integrated data from PFF API, CSV datasets, and play-by-play data to interpret player data</p></li>
+          <li><p>Developed position-specific evaluation formulas to rank prospects across multiple position groups</p></li>
+          <li><p>Combined positional rankings into a final overall big board and utilized Quarto for reproducible analysis</p></li>
+        </ul>
+        <br>
+        <h2>Dynamic NFL ARM Rankings</h2>
+        <h3>September 2025</h3>
+        <p><a href="projects.html" target="_blank" class="projects-btn">Link</a></p>
+        <ul>
+          <li><p>Developed a dynamic R model to rank NFL teams on a 0–10 scale using a 5-factor weighted formula</p></li>
+          <li><p>Collected and processed play-by-play data to generate advanced team performance metrics</p></li>
+          <li><p>Implemented web scraping with rvest to acquire additional team statistics from external sources</p></li>
+          <li><p>Designed data visualizations to display team ratings and trends using R plotting tools</p></li>
+          <li><p>Built a system capable of updating rankings dynamically as new data becomes available</p></li>
+        </ul>
+        <br>
+        <h2>YESS Y86 Simulator</h2>
+        <h3>September 2025 - December 2025</h3>
+        <ul>
+          <li><p>Built a Y86 processor simulator in C, implementing a 5-stage pipelined architecture as a final project for a systems course</p></li>
+          <li><p>Modeled core pipeline stages (fetch, decode, execute, memory, write-back) to simulate instruction execution</p></li>
+          <li><p>Collaborated through pair programming to design, debug, and optimize simulator functionality</p></li>
+          <li><p>Used Git and GitHub for version control, code management, and team collaboration</p></li>
+        </ul>
+        <br>
+        <h2>Smaller Projects</h2>
+        <p><a href="smallprojects.html" class="projects-btn">Small Projects</a></p>
+      </div>
+    </section>
+
+    <section id="contact">
+      <h1>Contact</h1>
+      <div class="contact-item">
+        <i class="fa-solid fa-envelope"></i>
+        <p><a href="mailto:aydenmatocha@gmail.com">aydenmatocha@gmail.com</a></p>
+      </div>
+
+      <div class="contact-item">
+        <i class="fa-solid fa-phone"></i>
+        <p>919-999-7113</p>
+      </div>
+
+      <div class="contact-item">
+        <a href="https://github.com/aydenmatocha" class="projects-btn" target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </div>
+
+      <div class="contact-item">
+        <a href="https://www.linkedin.com/in/ayden-matocha-9033a8241/" class="projects-btn" target="_blank">
+          <i class="fa-brands fa-linkedin"></i>
+        </a>
+      </div>
+    </section>
   </div>
 
 </body>

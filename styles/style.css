@@ -1,12 +1,20 @@
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: "Roboto", sans-serif;
+  background-color: #1b2840;
+  color: white;
 }
 
 .navbar {
   display: flex;
-  background-color: #333;
+  background-color: #040b17;
   align-items: center;
+  padding-left: 130px;
+  padding-right: 130px;
 }
 
 .navbar a {
@@ -14,10 +22,9 @@ body {
   text-decoration: none;
   padding: 20px 20px;
   font-weight: bold;
-  background-color: #333;
   border: none;
   transition: background-color 0.2s;
-  font-size: 15px;
+  font-size: 18px;
 }
 
 .navbar a.brand {
@@ -25,11 +32,221 @@ body {
 }
 
 .navbar a:hover {
-  background-color: #444;
+  background-color: #2a3043;
+}
+
+.navbar a.ayden {
+  color: darkgoldenrod;
+}
+
+.nav-icons {
+  margin-left: auto;
+}
+
+.fa-github {
+  font-size: 26px;
+  color: white;
+}
+
+.fa-linkedin {
+  font-size: 26px;
+  color: white;
+}
+
+.content h1 {
+  font-size: 60px;
+  text-align: center;
+  margin-top: 0;
+}
+
+.small-projects-content h1 {
+  font-size: 60px;
+  text-align: center;
+  margin-top: 0;
+}
+
+.content h2 {
+  font-size: 30px;
+  color: #606060;
+}
+
+.small-projects-content h2 {
+  font-size: 30px;
+}
+
+.content p {
+  font-size: 24px;
+}
+
+hr {
+  height: 2px;
+  border: 0;
+  background-color: #2265ae;
 }
 
 .content {
-	margin-left: 300px;
-	margin-right: 300px;
+	margin-left: 150px;
+	margin-right: 150px;
+    padding: 2rem;
+}
+
+.small-projects-content {
+  margin-left: 150px;
+  margin-right: 150px;
   padding: 2rem;
 }
+
+section {
+  margin-bottom: 100px;
+}
+
+.section-body {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.headshot {
+  border-radius: 20px;
+}
+
+#home {
+  background-color: #040b17;
+  border-radius: 20px;
+  display: flex;
+  gap: 40px;
+  padding: 50px;
+}
+
+#description {
+  margin-top: 30px;
+  display: inline-block;
+  padding: 20px;
+  padding-top: 0;
+  padding-bottom: 0;
+  background-color: #0f223e;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+#about {
+  background-color: #040b17;
+  padding: 50px;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.resume-btn {
+  display: inline-block;
+  padding: 12px 30px;
+  background-color: #1c72ff;
+  color: white;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.resume-btn:hover {
+  background-color: #145bcc;
+}
+
+#education {
+  background-color: #040b17;
+  padding: 50px;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.appstate {
+  margin-top: 50px;
+}
+
+.edu-content {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.edu-content h2 {
+  color: white;
+  font-size: 40px;
+}
+
+.edu-content h3 {
+  color: grey;
+  font-size: 30px;
+}
+
+#experience {
+  background-color: #040b17;
+  padding: 50px;
+  border-radius: 20px;
+  text-align: left;
+}
+
+#experience h2 {
+  color: white;
+  font-size: 40px;
+}
+
+#experience h3 {
+  color: grey;
+  font-size: 30px;
+}
+
+#projects {
+  background-color: #040b17;
+  padding: 50px;
+  border-radius: 20px;
+  text-align: left;
+}
+
+#projects h2 {
+  color: white;
+  font-size: 40px;
+}
+
+#projects h3 {
+  color: grey;
+  font-size: 30px;
+}
+
+.projects-btn {
+  display: inline-block;
+  padding: 12px 30px;
+  background-color: #1c72ff;
+  color: white;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.projects-btn:hover {
+  background-color: #145bcc;
+}
+
+#contact {
+  background-color: #040b17;
+  padding: 50px;
+  border-radius: 20px;
+  text-align: left;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 20px;
+}
+
+.fa-envelope {
+  font-size: 50px;
+}
+
+.fa-phone {
+  font-size: 50px;
+}
+
