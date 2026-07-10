@@ -64,7 +64,17 @@ body {
 }
 
 .nav-icons {
+  display: contents;
+}
+
+.nav-icons a:first-child {
   margin-left: auto;
+}
+
+@media (max-width: 500px) {
+  .nav-icons a:first-child {
+    margin-left: 0;
+  }
 }
 
 .fa-github {
@@ -81,6 +91,12 @@ body {
   font-size: 60px;
   text-align: center;
   margin-top: 0;
+}
+
+@media (max-width: 500px) {
+  .content h1 {
+    font-size: 40px;
+  }
 }
 
 .small-projects-content h1 {
@@ -305,4 +321,9 @@ section {
 
 .address {
   padding-left: 100px;
+}
+@media (max-width: 500px) {
+  .address {
+    padding-left: 50px;
+  }
 }
