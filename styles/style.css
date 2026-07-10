@@ -93,12 +93,6 @@ body {
   margin-top: 0;
 }
 
-@media (max-width: 500px) {
-  .content h1 {
-    font-size: 40px;
-  }
-}
-
 .small-projects-content h1 {
   font-size: 60px;
   text-align: center;
@@ -325,5 +319,30 @@ section {
 @media (max-width: 500px) {
   .address {
     padding-left: 50px;
+  }
+}
+
+@media (max-width: 500px) {
+  .content h1 {
+    font-size: 35px;
+  }
+  .content h2 {
+    font-size: 20px;
+  }
+  .content h3 {
+    font-size: 15px;
+  }
+  .content p {
+    font-size: 12px;
+  }
+
+  #experience h2,
+  #projects h2 {
+    font-size: 22px;
+  }
+
+  #experience h3,
+  #projects h3 {
+    font-size: 17px;
   }
 }
