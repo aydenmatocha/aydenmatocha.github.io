@@ -159,6 +159,13 @@ section {
   height: auto;
 }
 
+.awsccp {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  margin-top: 30px;
+}
+
 .headshot {
   border-radius: 20px;
 }
@@ -186,10 +193,14 @@ section {
   padding: 20px;
   padding-top: 0;
   padding-bottom: 0;
-  background-color: #0f223e;
+  background-color: #033463;
   border-radius: 20px;
   text-decoration: none;
   font-weight: bold;
+}
+
+#description h2 {
+  color: white;
 }
 
 #about {
@@ -327,13 +338,13 @@ section {
     font-size: 35px;
   }
   .content h2 {
-    font-size: 20px;
+    font-size: 25px;
   }
   .content h3 {
-    font-size: 15px;
+    font-size: 17px;
   }
   .content p {
-    font-size: 12px;
+    font-size: 14px;
   }
 
   #experience h2,
