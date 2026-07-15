@@ -237,19 +237,19 @@ section {
   margin-top: 50px;
 }
 
-.edu-content {
+.edu-content, .cert-content {
   display: flex;
   gap: 40px;
   align-items: flex-start;
   text-align: left;
 }
 
-.edu-content h2 {
+.edu-content h2, .cert-content h2 {
   color: white;
   font-size: 40px;
 }
 
-.edu-content h3 {
+.edu-content h3, .cert-content h3 {
   color: grey;
   font-size: 30px;
 }
@@ -310,13 +310,6 @@ section {
   text-align: left;
 }
 
-.fa-envelope {
-  font-size: 50px;
-}
-
-.fa-phone {
-  font-size: 50px;
-}
 
 .footer {
   background-color: #373636;
